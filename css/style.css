@@ -1,0 +1,418 @@
+/* ============================================================
+   情侣学习打卡 · 全局样式（手机优先）
+   CSS 基础概念（对照 C++ 理解）：
+   - 选择器 ≈ 给标签起的"类型名"，.card 选中所有 class="card" 的标签
+   - 属性声明 ≈ 赋值语句，color: red; 把文字设为红色
+   - 盒模型：每个标签都是一个盒子 = 内容 + padding(内边距) + border(边框) + margin(外边距)
+   - Flexbox：让盒子们自动排列/对齐/均分空间的布局方式，本项目的主力
+   ============================================================ */
+
+/* ---- 设计变量：改颜色只改这里 ---- */
+:root {
+  --pink: #e75480;            /* 主题粉 */
+  --pink-light: #ffeef3;      /* 浅粉背景 */
+  --pink-deep: #d1406c;       /* 深粉（按下状态） */
+  --text-main: #333333;
+  --text-sub: #999999;
+  --card-bg: #ffffff;
+  --page-bg: #fdf3f6;
+  --radius: 16px;             /* 卡片圆角 */
+  --shadow: 0 4px 16px rgba(231, 84, 128, 0.10);
+}
+
+/* ---- 基础重置 ---- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; }
+body {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--page-bg);
+  color: var(--text-main);
+  min-height: 100vh;
+}
+img { display: block; }
+button { border: none; cursor: pointer; font-family: inherit; }
+input, textarea { font-family: inherit; font-size: 16px; } /* ≥16px 防止 iOS 聚焦时自动放大页面 */
+
+/* ---- 应用容器：手机全宽；电脑访问时居中限宽 480px，像手机 App ---- */
+#app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--page-bg);
+  position: relative;
+}
+
+/* ---- 页面容器：给底部导航留出没遮挡的空间 ---- */
+.page {
+  min-height: 100vh;
+  padding: 16px 16px calc(76px + env(safe-area-inset-bottom));
+}
+
+/* ================= 通用组件 ================= */
+
+/* 白色圆角卡片 */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+/* 主按钮：通栏大按钮，52px 高方便手指点按 */
+.btn-primary {
+  display: block;
+  width: 100%;
+  height: 52px;
+  border-radius: 26px;
+  background: linear-gradient(135deg, #ff7ea8, var(--pink));
+  color: #fff;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  transition: transform 0.1s, opacity 0.2s;
+}
+.btn-primary:active { transform: scale(0.97); background: var(--pink-deep); }
+.btn-primary:disabled { opacity: 0.5; }
+
+/* 次要按钮（描边样式） */
+.btn-outline {
+  display: block;
+  width: 100%;
+  height: 48px;
+  border-radius: 24px;
+  background: #fff;
+  color: var(--pink);
+  font-size: 15px;
+  border: 1.5px solid var(--pink);
+}
+.btn-outline:active { background: var(--pink-light); }
+
+/* 输入框 */
+.input {
+  width: 100%;
+  height: 48px;
+  border: 1.5px solid #f0d4de;
+  border-radius: 12px;
+  padding: 0 14px;
+  margin-bottom: 12px;
+  outline: none;
+  background: #fff;
+}
+.input:focus { border-color: var(--pink); }
+
+/* 小块说明文字 */
+.tip { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+
+/* 浮动提示条（toast） */
+.toast {
+  position: fixed;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 22px;
+  font-size: 14px;
+  z-index: 999;
+  animation: toast-in 0.25s ease;
+  white-space: nowrap;
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translate(-50%, -8px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* ================= 登录 / 配对页 ================= */
+.auth-hero {
+  text-align: center;
+  padding: 60px 0 30px;
+}
+.auth-hero .logo { font-size: 56px; }
+.auth-hero h1 { font-size: 22px; margin: 10px 0 6px; }
+.auth-hero p { color: var(--text-sub); font-size: 14px; }
+.auth-switch {
+  text-align: center;
+  margin-top: 14px;
+  font-size: 14px;
+  color: var(--pink);
+}
+
+/* 配对码大号展示 */
+.pair-code-box {
+  text-align: center;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 8px;
+  color: var(--pink);
+  background: var(--pink-light);
+  border-radius: 12px;
+  padding: 18px 0;
+  margin: 14px 0;
+}
+
+/* ================= 首页 ================= */
+.home-greeting {
+  padding: 10px 4px 14px;
+}
+.home-greeting h2 { font-size: 20px; }
+.home-greeting p { font-size: 13px; color: var(--text-sub); margin-top: 4px; }
+
+/* 情侣插画横幅 + 倒计时角标 */
+.banner {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  height: 180px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+.banner img { width: 100%; height: 100%; object-fit: cover; }
+.banner .deadline-tag {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--text-sub);
+}
+.banner .deadline-tag strong {
+  display: block;
+  font-size: 18px;
+  color: var(--text-main);
+}
+
+/* 三格统计卡片：flex 均分 */
+.stats-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.stat-card {
+  flex: 1;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 0;
+  text-align: center;
+}
+.stat-card .icon { font-size: 18px; }
+.stat-card .num { font-size: 24px; font-weight: 700; margin: 4px 0 2px; }
+.stat-card .label { font-size: 12px; color: var(--text-sub); }
+
+/* 今日状态卡片（我 / 对方） */
+.today-status {
+  display: flex;
+  gap: 12px;
+}
+.status-col {
+  flex: 1;
+  border-radius: 12px;
+  padding: 12px;
+  background: var(--pink-light);
+  text-align: center;
+}
+.status-col.done { background: #e8f8ee; }
+.status-col .who { font-size: 13px; color: var(--text-sub); }
+.status-col .state { font-size: 16px; font-weight: 600; margin-top: 6px; }
+
+/* ================= 打卡页 ================= */
+.checkin-tip {
+  background: var(--pink-light);
+  color: var(--pink-deep);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 16px 4px 10px;
+}
+.section-title .required {
+  color: var(--pink);
+  font-size: 12px;
+  margin-left: 6px;
+  font-weight: 400;
+}
+
+/* 图片选择九宫格 */
+.photo-grid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.photo-item {
+  width: calc((100% - 20px) / 3);   /* 一行三张 */
+  aspect-ratio: 1 / 1;              /* 正方形 */
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  background: #f6e3ea;
+}
+.photo-item img { width: 100%; height: 100%; object-fit: cover; }
+.photo-item .del {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 13px;
+  line-height: 22px;
+  text-align: center;
+}
+.photo-add {
+  width: calc((100% - 20px) / 3);
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+  border: 1.5px dashed #e3aebf;
+  color: #c08ca0;
+  font-size: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+
+/* 时长滑块：原生 range + 大号数字 */
+.duration-display {
+  text-align: center;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--pink);
+  margin: 8px 0 4px;
+}
+.duration-display small { font-size: 14px; font-weight: 400; color: var(--text-sub); }
+input[type="range"] {
+  width: 100%;
+  height: 36px;
+  accent-color: var(--pink);   /* 一行代码把原生滑块染成主题色 */
+}
+
+/* 心得文本域 */
+.note-input {
+  width: 100%;
+  min-height: 90px;
+  border: 1.5px solid #f0d4de;
+  border-radius: 12px;
+  padding: 12px 14px;
+  resize: none;
+  outline: none;
+  background: #fff;
+}
+.note-input:focus { border-color: var(--pink); }
+
+/* ================= 日历页 ================= */
+.calendar-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.calendar-head .month-label { font-size: 17px; font-weight: 700; }
+.calendar-head button {
+  background: #fff;
+  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  font-size: 16px;
+  color: var(--pink);
+  box-shadow: var(--shadow);
+}
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);  /* 7 列：周一到周日 */
+  gap: 6px;
+}
+.calendar-grid .weekday {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-sub);
+  padding: 4px 0;
+}
+.day-cell {
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  position: relative;
+}
+.day-cell.empty { background: transparent; }
+.day-cell.today { outline: 2px solid var(--pink); }
+.day-cell.selected { background: var(--pink); color: #fff; }
+.day-dots { display: flex; gap: 3px; margin-top: 3px; height: 6px; }
+.day-dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pink);
+}
+.day-dots i.partner { background: #7ea8ff; }  /* 蓝点=伴侣，粉点=我 */
+.day-cell.selected .day-dots i { background: #fff; }
+
+/* 选中日的打卡详情 */
+.checkin-detail { display: flex; flex-direction: column; gap: 12px; }
+.checkin-item { border-left: 3px solid var(--pink); padding-left: 12px; }
+.checkin-item.partner { border-left-color: #7ea8ff; }
+.checkin-item .meta { font-size: 12px; color: var(--text-sub); margin-bottom: 4px; }
+.checkin-item .note { font-size: 14px; line-height: 1.6; }
+.checkin-item .imgs { display: flex; gap: 8px; margin-top: 8px; }
+.checkin-item .imgs img {
+  width: 72px;
+  height: 72px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* ================= 底部导航 ================= */
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  background: rgba(255, 255, 255, 0.96);
+  border-top: 1px solid #f5dbe4;
+  padding-bottom: env(safe-area-inset-bottom);  /* 避开全面屏底部手势条 */
+  z-index: 100;
+}
+.tabbar a {
+  flex: 1;
+  text-align: center;
+  padding: 8px 0 6px;
+  text-decoration: none;
+  color: var(--text-sub);
+  font-size: 11px;
+}
+.tabbar a .ico { font-size: 21px; display: block; margin-bottom: 2px; }
+.tabbar a.active { color: var(--pink); font-weight: 600; }
+
+/* 居中大加载圈 */
+.loading-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-sub);
+  font-size: 14px;
+}
+
+/* 电脑端微调 */
+@media (min-width: 768px) {
+  body { background: #f7e6ec; }
+  #app { box-shadow: 0 0 40px rgba(231, 84, 128, 0.15); }
+}

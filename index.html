@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <!-- 手机适配：宽度=设备宽度，初始不缩放，适配刘海屏 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>我们的上岸小站</title>
+
+  <!-- 通过 CDN 引入三个库（和 C++ 的 #include 类似，只是从网络加载）：
+       Vue：负责"数据变了，页面自动更新"
+       Supabase：负责和云端数据库通信
+       Compressor：负责上传前压缩手机照片 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/compressorjs@1/dist/compressor.min.js"></script>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Vue 会把这个 div 里的内容替换成我们的应用 -->
+  <div id="app"></div>
+
+  <!-- 按依赖顺序加载我们自己的代码：先工具，后页面，最后启动 -->
+  <script src="js/config.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/components/LoginView.js"></script>
+  <script src="js/components/PairView.js"></script>
+  <script src="js/components/HomeView.js"></script>
+  <script src="js/components/CheckinView.js"></script>
+  <script src="js/components/CalendarView.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

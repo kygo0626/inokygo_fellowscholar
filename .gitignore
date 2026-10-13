@@ -1,0 +1,8 @@
+# 操作系统产生的垃圾文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 注意：js/config.js 不需要 ignore！
+# anon key 公开在前端是 Supabase 的官方设计，数据安全由 RLS 规则保证。
+# 但绝对不要把 service_role key 写进任何会提交的文件。
