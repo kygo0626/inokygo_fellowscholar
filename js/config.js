@@ -11,7 +11,7 @@
  * 注意：绝对不要把 service_role key 填到这里！
  * ============================================================ */
 
-const SUPABASE_URL = 'https://wgqppbqwetipwztalixf.supabase.co';        // 形如 https://abcdefgh.supabase.co
+const SUPABASE_URL = 'https://wgqppbqwetipwztallxf.supabase.co';        // 形如 https://abcdefgh.supabase.co
 const SUPABASE_ANON_KEY = 'sb_publishable_galYN6el0A0HrVZqQa9KKw_KwCKENQr';  // 形如 eyJhbGciOi... 很长一串
 
 /* 打卡截止时间：晚上 23:30（参考图的规则） */
