@@ -23,6 +23,11 @@ async function apiSignUp(email, password, nickname) {
   // 资料表的 id 必须等于 auth 用户的 id（一对一关系）
   const { error: pErr } = await sb.from('profiles').insert({ id: data.user.id, nickname });
   if (pErr) throw new Error(pErr.message);
+  /* 注册成功后主动刷新全局状态并跳去配对页。
+     注意：signUp 成功瞬间 onAuthStateChange 也会触发一次加载，
+     那时资料行可能还没插入（竞态），所以这里 insert 完成后再加载一次兜底。 */
+  await apiLoadMyData();
+  navigate('/pair');
 }
 
 /* 登录 */
@@ -40,10 +45,16 @@ async function apiSignOut() {
 
 /* 登录成功后调用：把 我的资料 / 小家 / 伴侣资料 一次性装进 store */
 async function apiLoadMyData() {
-  // 1. 我的资料
-  const { data: profile, error } = await sb
-    .from('profiles').select('*').eq('id', store.user.id).maybeSingle();
-  if (error) throw new Error(error.message);
+  // 1. 我的资料（查不到可能是注册竞态：资料行还没插完，等 0.6 秒重试，最多 3 次）
+  let profile = null;
+  for (let i = 0; i < 3; i++) {
+    const { data, error } = await sb
+      .from('profiles').select('*').eq('id', store.user.id).maybeSingle();
+    if (error) throw new Error(error.message);
+    profile = data;
+    if (profile) break;
+    await new Promise(r => setTimeout(r, 600));
+  }
   store.profile = profile;
   store.couple = null;
   store.partner = null;
